@@ -4,26 +4,48 @@ import { closeAllPopouts } from "./_popoutHelpers.mjs";
 // add event listener to chat log.
 export function onClickButton(chatLog, html) {
   html[0].addEventListener("click", async (event) => {
+    const logPrefix = "Requestor|click";
+    console.debug(`${logPrefix} captured`, {
+      target: event?.target?.outerHTML ?? event?.target?.tagName,
+      pathLength: event?.composedPath?.().length
+    });
+
     // make sure it's a Requestor button.
     const button = event.target?.closest(`button[id="${MODULE}"]`);
-    if (!button) return;
+    if (!button) {
+      return;
+    }
 
     // get the button index (starting at 0).
     const buttonIndex = Number(button.dataset.index);
 
     // find the chat message element and document data safely.
     const messageContainer = button.closest("[data-message-id]");
-    if (!messageContainer) return;
+    if (!messageContainer) {
+      console.warn(`${logPrefix} missing message container`, { buttonIndex });
+      return;
+    }
     const messageId = messageContainer.dataset.messageId;
     const message = game.messages.get(messageId);
-    if (!message) return;
+    if (!message) {
+      console.warn(`${logPrefix} message not found`, { messageId, buttonIndex });
+      return;
+    }
 
     // get the args.
     const buttonData = message.getFlag(MODULE, "args.buttonData") ?? [];
-    if (!Array.isArray(buttonData)) return;
+    if (!Array.isArray(buttonData)) {
+      console.warn(`${logPrefix} buttonData is not an array`, { messageId, buttonData });
+      return;
+    }
     const args = buttonData[buttonIndex];
-    if (!args?.action) return;
+    if (!args?.action) {
+      console.warn(`${logPrefix} missing action`, { messageId, buttonIndex, args });
+      return;
+    }
     const limit = args.limit;
+
+    console.debug(`${logPrefix} button ready`, { messageId, buttonIndex, limit, args });
 
     // if it is only allowed to be clicked once, and is already clicked, bail out.
     const clickedKey = `messageIds.${messageId}.${buttonIndex}.clicked`;
@@ -58,8 +80,8 @@ export function onClickButton(chatLog, html) {
 
     // turn the card's embedded flag into a function.
     const body = `(
-            ${args.action}
-        )();`;
+        ${args.action}
+      )();`;
     const fn = Function("token", "character", "actor", "scene", "amount", "event", "args", body);
 
     // define helper variables.
@@ -107,7 +129,12 @@ export function onClickButton(chatLog, html) {
     delete THIS.label;
 
     // execute the embedded function.
-    return fn.call(THIS, token, character, actor, scene, amount, event, THIS);
+    try {
+      console.debug(`${logPrefix} executing`, { messageId, buttonIndex });
+      return fn.call(THIS, token, character, actor, scene, amount, event, THIS);
+    } catch (error) {
+      console.error(`${logPrefix} error executing button`, { messageId, buttonIndex, error });
+    }
   });
 }
 
