@@ -143,7 +143,7 @@ export function onClickButton(chatLog, html) {
     // execute the embedded function.
     try {
       console.debug(`${logPrefix} executing`, { messageId, buttonIndex });
-      return fn.call(THIS, token, character, actor, scene, amount, event, THIS);
+      return await fn.call(THIS, token, character, actor, scene, amount, event, THIS);
     } catch (error) {
       console.error(`${logPrefix} error executing button`, { messageId, buttonIndex, error });
     }
