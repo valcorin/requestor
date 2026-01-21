@@ -55,13 +55,15 @@ export function onClickButton(chatLog, html) {
     const argsEntries = args && argsType === "object" ? Object.entries(args) : null;
     const argsKeys = args && argsType === "object" ? Object.keys(args) : [];
 
-    const hasAmount = Object.prototype.hasOwnProperty.call(args ?? {}, "amount");
-    const amountPreview = hasAmount ? args.amount : undefined;
+    const hasAmountDirect = Object.prototype.hasOwnProperty.call(args ?? {}, "amount");
+    const scopeAmount = args?.scope?.amount;
+    const hasScopeAmount = scopeAmount !== undefined;
+    const amountPreview = hasAmountDirect ? args.amount : hasScopeAmount ? scopeAmount : undefined;
     const amountType = typeof amountPreview;
     const amountEntries = amountPreview && amountType === "object" ? Object.entries(amountPreview) : null;
 
     console.log(`${logPrefix} args detail`, { messageId, buttonIndex, argsType, argsKeys, argsEntries, args });
-    console.log(`${logPrefix} amount detail`, { messageId, buttonIndex, hasAmount, amountType, amount: amountPreview, amountEntries });
+    console.log(`${logPrefix} amount detail`, { messageId, buttonIndex, hasAmountDirect, hasScopeAmount, amountType, amount: amountPreview, amountEntries });
 
     if (!args?.action) {
       console.warn(`${logPrefix} missing action`, { messageId, buttonIndex, argsType, args, argsEntries });
@@ -117,7 +119,7 @@ export function onClickButton(chatLog, html) {
     let actor = token?.actor ?? character;
     let scene = canvas?.scene;
 
-    let amount = hasAmount ? args.amount : "";
+    let amount = hasAmountDirect ? args.amount : hasScopeAmount ? scopeAmount : "";
 
     if ('actor_from_token_ID' in args) {
       let target_token = canvas.tokens.get(args.actor_from_token_ID)
