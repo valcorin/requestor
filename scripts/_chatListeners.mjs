@@ -11,14 +11,18 @@ export function onClickButton(chatLog, html) {
     // get the button index (starting at 0).
     const buttonIndex = Number(button.dataset.index);
 
-    // get the chat card.
-    const card = button.closest(".chat-card");
-    const cardHTML = card.closest(".message");
-    const messageId = cardHTML.dataset.messageId;
+    // find the chat message element and document data safely.
+    const messageContainer = button.closest("[data-message-id]");
+    if (!messageContainer) return;
+    const messageId = messageContainer.dataset.messageId;
     const message = game.messages.get(messageId);
+    if (!message) return;
 
     // get the args.
-    const args = message.getFlag(MODULE, "args.buttonData")[buttonIndex];
+    const buttonData = message.getFlag(MODULE, "args.buttonData") ?? [];
+    if (!Array.isArray(buttonData)) return;
+    const args = buttonData[buttonIndex];
+    if (!args?.action) return;
     const limit = args.limit;
 
     // if it is only allowed to be clicked once, and is already clicked, bail out.
@@ -81,14 +85,14 @@ export function onClickButton(chatLog, html) {
     else if (limit === LIMIT.ONCE) {
       const key = `messageIds.${messageId}.${buttonIndex}.clicked`;
       await game.user.setFlag(MODULE, key, true);
-      setMessageDisabledStates(message, [cardHTML]);
+      setMessageDisabledStates(message);
     }
 
     // if button is one of several options, flag user as having clicked an option on this card.
     else if (limit === LIMIT.OPTION) {
       const key = `messageIds.${messageId}.clickedOption`;
       await game.user.setFlag(MODULE, key, true);
-      setMessageDisabledStates(message, [cardHTML]);
+      setMessageDisabledStates(message);
     }
 
     // if message context is set to close on button clicks, close all popouts.
