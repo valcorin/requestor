@@ -51,13 +51,15 @@ export function onClickButton(chatLog, html) {
       return;
     }
     const args = buttonData[buttonIndex];
+    const argsType = typeof args;
+    const argsEntries = args && argsType === "object" ? Object.entries(args) : null;
     if (!args?.action) {
-      console.warn(`${logPrefix} missing action`, { messageId, buttonIndex, args });
+      console.warn(`${logPrefix} missing action`, { messageId, buttonIndex, argsType, args, argsEntries });
       return;
     }
     const limit = args.limit;
 
-    console.debug(`${logPrefix} button ready`, { messageId, buttonIndex, limit, args });
+    console.debug(`${logPrefix} button ready`, { messageId, buttonIndex, limit, argsType, args, argsEntries });
 
     // if it is only allowed to be clicked once, and is already clicked, bail out.
     const clickedKey = `messageIds.${messageId}.${buttonIndex}.clicked`;
@@ -90,6 +92,9 @@ export function onClickButton(chatLog, html) {
       }
     }
 
+
+    
+
     // turn the card's embedded flag into a function.
     const body = `(
         ${args.action}
@@ -105,9 +110,6 @@ export function onClickButton(chatLog, html) {
     let amount = "";
     if ("amount" in args) {
       amount = args.amount;
-      const amountType = typeof amount;
-      const amountEntries = amount && amountType === "object" ? Object.entries(amount) : null;
-      console.debug(`${logPrefix} amount detail`, { messageId, buttonIndex, amountType, amount, amountEntries });
     }
 
     if ('actor_from_token_ID' in args) {
