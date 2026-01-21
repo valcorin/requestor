@@ -122,7 +122,14 @@ export function onClickButton(chatLog, html) {
     let amount = hasAmountDirect ? args.amount : hasScopeAmount ? scopeAmount : "";
 
     if ('actor_from_token_ID' in args) {
+      console.log("Changing actor from actor_from_token_ID", args.actor_from_token_ID)
       let target_token = canvas.tokens.get(args.actor_from_token_ID)
+      actor = target_token.actor;
+    }
+
+    if ('tokenId' in amount) {
+      console.log("Changing actor from amount.tokenId", amount.tokenId);
+      let target_token = canvas.tokens.get(amount.tokenId);
       actor = target_token.actor;
     }
     
