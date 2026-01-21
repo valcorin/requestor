@@ -52,26 +52,26 @@ export function onClickButton(chatLog, html) {
     }
     const args = buttonData[buttonIndex];
     const argsType = typeof args;
-    const argsEntries = args && argsType === "object" ? Object.entries(args) : null;
-    const argsKeys = args && argsType === "object" ? Object.keys(args) : [];
+    //const argsEntries = args && argsType === "object" ? Object.entries(args) : null;
+    //const argsKeys = args && argsType === "object" ? Object.keys(args) : [];
 
     const hasAmountDirect = Object.prototype.hasOwnProperty.call(args ?? {}, "amount");
     const scopeAmount = args?.scope?.amount;
     const hasScopeAmount = scopeAmount !== undefined;
     const amountPreview = hasAmountDirect ? args.amount : hasScopeAmount ? scopeAmount : undefined;
     const amountType = typeof amountPreview;
-    const amountEntries = amountPreview && amountType === "object" ? Object.entries(amountPreview) : null;
+    //const amountEntries = amountPreview && amountType === "object" ? Object.entries(amountPreview) : null;
 
-    console.log(`${logPrefix} args detail`, { messageId, buttonIndex, argsType, argsKeys, argsEntries, args });
-    console.log(`${logPrefix} amount detail`, { messageId, buttonIndex, hasAmountDirect, hasScopeAmount, amountType, amount: amountPreview, amountEntries });
+    //console.log(`${logPrefix} args detail`, { messageId, buttonIndex, argsType, argsKeys, argsEntries, args });
+    //console.log(`${logPrefix} amount detail`, { messageId, buttonIndex, hasAmountDirect, hasScopeAmount, amountType, amount: amountPreview, amountEntries });
 
     if (!args?.action) {
-      console.warn(`${logPrefix} missing action`, { messageId, buttonIndex, argsType, args, argsEntries });
+      console.warn(`${logPrefix} missing action`, { messageId, buttonIndex, argsType, args });
       return;
     }
     const limit = args.limit;
 
-    console.debug(`${logPrefix} button ready`, { messageId, buttonIndex, limit, argsType, args, argsEntries });
+    console.debug(`${logPrefix} button ready`, { messageId, buttonIndex, limit, argsType, args });
 
     // if it is only allowed to be clicked once, and is already clicked, bail out.
     const clickedKey = `messageIds.${messageId}.${buttonIndex}.clicked`;
