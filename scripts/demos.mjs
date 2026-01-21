@@ -79,7 +79,16 @@ export class DEMOS {
   }
 
   static createMeasuredTemplate = async ({ whisper, templateData, limit } = {}) => {
-    const { x, y } = canvas.app.renderer.plugins.interaction.mouse.getLocalPosition(canvas.app.stage);
+    const pointerPosition = (() => {
+      if (canvas?.mousePosition) return canvas.mousePosition;
+      const pointer = canvas?.app?.renderer?.events?.pointer;
+      if (pointer?.getLocalPosition) return pointer.getLocalPosition(canvas.app.stage);
+      const mouse = canvas?.app?.renderer?.plugins?.interaction?.mouse;
+      if (mouse?.getLocalPosition) return mouse.getLocalPosition(canvas.app.stage);
+      return { x: 0, y: 0 };
+    })();
+
+    const { x, y } = pointerPosition;
     const template_data = templateData ?? {
       t: "circle", x, y, distance: 20, direction: 0, angle: 0, width: 1
     }
@@ -88,7 +97,8 @@ export class DEMOS {
       action: () => {
         const template_data = this.template_data;
         template_data.user = game.user.id;
-        const doc = new CONFIG.MeasuredTemplate.documentClass(template_data, { parent: canvas.scene });
+        const parentScene = canvas.scene ?? game.scenes.active;
+        const doc = new CONFIG.MeasuredTemplate.documentClass(template_data, { parent: parentScene });
         const template = new game.dnd5e.canvas.AbilityTemplate(doc);
         template.drawPreview();
       },
