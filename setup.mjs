@@ -14,5 +14,5 @@ Hooks.once("ready", initialDisable);
 Hooks.once("renderChatLog", cleanUp);
 Hooks.on("renderChatLog", onClickButton);
 Hooks.on("renderChatPopout", onClickButton);
-Hooks.on("renderChatMessage", setMessageDisabledStates);
+Hooks.on("renderChatMessageHTML", setMessageDisabledStates);
 Hooks.on("createChatMessage", popoutHelpers);

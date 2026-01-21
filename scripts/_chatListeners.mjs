@@ -4,17 +4,18 @@ import { closeAllPopouts } from "./_popoutHelpers.mjs";
 // add event listener to chat log.
 export function onClickButton(chatLog, html) {
   const hookLogPrefix = "Requestor|hook";
-  if (!html?.[0]) {
+  const root = html?.[0] ?? html; // renderChatLog uses jQuery, popouts may pass HTMLElement
+  if (!root) {
     console.warn(`${hookLogPrefix} missing html root`, { chatLogType: chatLog?.constructor?.name });
     return;
   }
   console.debug(`${hookLogPrefix} binding click handler`, {
     chatLogType: chatLog?.constructor?.name,
-    node: html[0]?.tagName,
-    hasPopout: !!html[0]?.closest?.(".app")
+    node: root?.tagName,
+    hasPopout: !!root?.closest?.(".app")
   });
 
-  html[0].addEventListener("click", async (event) => {
+  root.addEventListener("click", async (event) => {
     const logPrefix = "Requestor|click";
     console.debug(`${logPrefix} captured`, {
       target: event?.target?.outerHTML ?? event?.target?.tagName,
@@ -150,12 +151,16 @@ export function onClickButton(chatLog, html) {
 }
 
 // set disabled state of buttons when a message is rendered.
-export function setMessageDisabledStates(message) {
+export function setMessageDisabledStates(message, html) {
   if (!message) {
     console.warn("Requestor|disable missing message");
     return;
   }
-  document.querySelectorAll(`[data-message-id="${message.id}"]`).forEach(node => {
+
+  const root = html?.[0] ?? html;
+  const nodes = root ? [root] : Array.from(document.querySelectorAll(`[data-message-id="${message.id}"]`));
+
+  nodes.forEach(node => {
 
     // if the message is found, get all of its buttons.
     const buttons = node.querySelectorAll(`button[id="${MODULE}"]`);
