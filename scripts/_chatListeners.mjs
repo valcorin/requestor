@@ -103,8 +103,11 @@ export function onClickButton(chatLog, html) {
     let scene = canvas?.scene;
 
     let amount = "";
-    if ('amount' in args) {
+    if ("amount" in args) {
       amount = args.amount;
+      const amountType = typeof amount;
+      const amountEntries = amount && amountType === "object" ? Object.entries(amount) : null;
+      console.debug(`${logPrefix} amount detail`, { messageId, buttonIndex, amountType, amount, amountEntries });
     }
 
     if ('actor_from_token_ID' in args) {
