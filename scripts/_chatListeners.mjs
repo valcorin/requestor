@@ -3,6 +3,17 @@ import { closeAllPopouts } from "./_popoutHelpers.mjs";
 
 // add event listener to chat log.
 export function onClickButton(chatLog, html) {
+  const hookLogPrefix = "Requestor|hook";
+  if (!html?.[0]) {
+    console.warn(`${hookLogPrefix} missing html root`, { chatLogType: chatLog?.constructor?.name });
+    return;
+  }
+  console.debug(`${hookLogPrefix} binding click handler`, {
+    chatLogType: chatLog?.constructor?.name,
+    node: html[0]?.tagName,
+    hasPopout: !!html[0]?.closest?.(".app")
+  });
+
   html[0].addEventListener("click", async (event) => {
     const logPrefix = "Requestor|click";
     console.debug(`${logPrefix} captured`, {
@@ -140,11 +151,15 @@ export function onClickButton(chatLog, html) {
 
 // set disabled state of buttons when a message is rendered.
 export function setMessageDisabledStates(message) {
-  if (!message) return;
+  if (!message) {
+    console.warn("Requestor|disable missing message");
+    return;
+  }
   document.querySelectorAll(`[data-message-id="${message.id}"]`).forEach(node => {
 
     // if the message is found, get all of its buttons.
     const buttons = node.querySelectorAll(`button[id="${MODULE}"]`);
+    console.debug("Requestor|disable evaluating buttons", { messageId: message.id, buttonCount: buttons.length });
 
     // for each button, if the button is limited and clicked, set it to be disabled.
     // if a button is an option, and the user has clicked an option on this card, set it to be disabled.
@@ -171,6 +186,7 @@ export function setMessageDisabledStates(message) {
 // initial disabled state of buttons when logging in.
 export function initialDisable() {
   const ids = Object.keys(game.user.getFlag(MODULE, "messageIds") ?? {});
+  console.debug("Requestor|initialDisable", { ids });
   for (const id of ids) {
     const message = game.messages.get(id);
     if (!message) continue;
