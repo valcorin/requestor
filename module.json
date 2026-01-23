@@ -1,7 +1,7 @@
 {
   "id": "requestor",
   "title": "Requestor",
-  "version": "13.0.8",
+  "version": "13.0.9",
   "authors": [
     {
       "name": "Zhell",
@@ -31,6 +31,5 @@
   ],
   "url": "https://github.com/valcorin/requestor",
   "manifest": "https://raw.githubusercontent.com/valcorin/requestor/main/module.json",
-  "download": "https://github.com/valcorin/requestor/archive/refs/heads/main.zip",
-  "name": "requestor"
+  "download": "https://github.com/valcorin/requestor/archive/refs/heads/main.zip"
 }
