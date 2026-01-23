@@ -217,6 +217,10 @@ export function initialDisable() {
     const message = game.messages.get(id);
     if (!message) continue;
     const messageHTML = document.querySelector(`[data-message-id="${id}"]`);
+    if (!messageHTML) {
+      console.debug("Requestor|initialDisable skipping missing messageHTML", { messageId: id });
+      continue;
+    }
     const buttons = messageHTML.querySelectorAll(`button[id="${MODULE}"]`);
     for (const button of buttons) {
       const buttonIndex = button.dataset.index;
@@ -225,9 +229,9 @@ export function initialDisable() {
 
       const keyOption = `messageIds.${id}.clickedOption`;
       const hasClickedOption = game.user.getFlag(MODULE, keyOption);
-      const messageButtonDataArray = message.getFlag(MODULE, "args.buttonData");
+      const messageButtonDataArray = message.getFlag(MODULE, "args.buttonData") ?? [];
       if (hasClickedOption && messageButtonDataArray.length) {
-        const { limit } = messageButtonDataArray[buttonIndex];
+        const { limit } = messageButtonDataArray[buttonIndex] ?? {};
         if (limit === LIMIT.OPTION) button.disabled = true;
       }
     }
