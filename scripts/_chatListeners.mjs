@@ -185,7 +185,6 @@ export function setMessageDisabledStates(message, html) {
 
     // if the message is found, get all of its buttons.
     const buttons = node.querySelectorAll(`button[id="${MODULE}"]`);
-    console.debug("Requestor|disable evaluating buttons", { messageId: message.id, buttonCount: buttons.length });
 
     // for each button, if the button is limited and clicked, set it to be disabled.
     // if a button is an option, and the user has clicked an option on this card, set it to be disabled.
