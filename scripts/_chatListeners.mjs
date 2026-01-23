@@ -217,7 +217,6 @@ export function initialDisable() {
     if (!message) continue;
     const messageHTML = document.querySelector(`[data-message-id="${id}"]`);
     if (!messageHTML) {
-      console.debug("Requestor|initialDisable skipping missing messageHTML", { messageId: id });
       continue;
     }
     const buttons = messageHTML?.querySelectorAll?.(`button[id="${MODULE}"]`) ?? [];
