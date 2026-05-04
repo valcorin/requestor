@@ -85,7 +85,7 @@ export function onClickButton(chatLog, html) {
 
     // bail out if user is not allowed to click this button.
     const trustMode = game.settings.get(MODULE, TRUST_MODE);
-    const messageAuthor = message.user ?? game.users.get(message.userId);
+      const messageAuthor = message.author ?? game.users.get(message.userId);
     const authorIsGM = messageAuthor?.isGM ?? false;
     const currentUserIsGM = game.user?.isGM ?? false;
     if (!authorIsGM && !currentUserIsGM) {

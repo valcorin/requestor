@@ -8,10 +8,11 @@ export function popoutHelpers(message, context) {
 
   // if whispered, you must be a recipient, GM, or creator.
   if (message.whisper.length > 0) {
+      const authorId = message.author?.id ?? message.userId;
     const show = [
       game.user.isGM,
       message.whisper.includes(game.user.id),
-      message.user === game.user.id
+        authorId === game.user.id
     ].includes(true);
 
     if (!show) return;
