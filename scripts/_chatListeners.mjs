@@ -87,7 +87,8 @@ export function onClickButton(chatLog, html) {
     const trustMode = game.settings.get(MODULE, TRUST_MODE);
     const messageAuthor = message.user ?? game.users.get(message.userId);
     const authorIsGM = messageAuthor?.isGM ?? false;
-    if (!authorIsGM) {
+    const currentUserIsGM = game.user?.isGM ?? false;
+    if (!authorIsGM && !currentUserIsGM) {
       if (trustMode === TRUST_OPTIONS.GM_ONLY) {
         const string = "REQUESTOR.WARN.GM_ONLY";
         const warning = game.i18n.localize(string);
