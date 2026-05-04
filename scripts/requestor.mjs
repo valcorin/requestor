@@ -71,7 +71,7 @@ export async function request(config = {}) {
   } else templateData.buttons = false;
 
   const template = "modules/requestor/templates/chatcard.hbs";
-  const content = await renderTemplate(template, templateData);
+  const content = await foundry.applications.handlebars.renderTemplate(template, templateData);
 
   // CHAT CARD DATA.
   for (const data of params.buttonData ?? []) {
